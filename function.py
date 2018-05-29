@@ -26,7 +26,13 @@ def run_program():
         if act == "a":
             add_todo()
         elif act == "l":
-            list_todo()
+            u = ''
+            while u not in ['a','f','uf','i','ui','c','q']:
+                u = input("What items are you looking at (a: All, f: Finished only, uf : Unfinished only,\n i: Important only, ui: unimportant only, c: category, q: break) :")
+                if u == 'q':
+                    break
+                elif u in ['a','f','uf','i','ui','c']:
+                    filter_todo(filter=u)
         elif act == "m":
             modify_todo()
         elif act == "d":
@@ -58,30 +64,44 @@ def add_todo():
     cur.execute(sql)
 
 # LIST
+
+def filter_todo(filter):
+    sql = "select * from todo where 1"
+    cur.execute(sql)
+    
+    rows = cur.fetchall()
+
+    data = []
+
+    if filter == 'a':
+        for row in rows:
+            data.append(row)
+    elif filter == 'f':
+        for row in rows:
+            if row[2] == "○":
+                data.append(row)
+    elif filter == 'uf':
+        for row in rows:
+            if row[2] == "×":
+                data.append(row)
+    elif filter == 'i':
+        for row in rows:
+            if row[1] == "★":
+                data.append(row)
+    elif filter == 'ui':
+        for row in rows:
+            if row[1] == "  ":
+                data.append(row)
+    elif filter == 'c':
+        ci = input("Category?: ")
+        for row in rows:
+            if row[4] == ci:
+                data.append(row)         
+    list_todo(data)
+    return data
         
-def list_todo():
-    while True:
-        act = input("Filter(a: All, i: Important, ni: Nonimportant, \n f: Finished, nf: Nonfinished, c: Category, q: Quit): ")
-        if act == "a":
-            list_all()
-            break
-        elif act == "f":
-            list_finish()
-            break
-        elif act == "nf":
-            list_nonfinish()
-            break
-        elif act == "i":
-            list_important()
-            break
-        elif act == "ni":
-            list_nonimportant()
-            break
-        elif act == "c":
-            list_category()
-            break
-        elif act == "q":
-            break
+def list_todo(data):
+    print(data)
 
 # List-SubFunction
 
