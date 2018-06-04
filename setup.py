@@ -10,7 +10,7 @@ setup(
     download_url = 'https://github.com/oss-a-1/sqlitedb',
     license = 'mit license',
     keyword = ['checkit', 'checkits'],
-    install_requires=['colorama', 'function']
+    install_requires=['colorama', 'function'],
     entry_points = {
         'console_scripts': [
                 'checkits=main:mainmenu_pre_login'
