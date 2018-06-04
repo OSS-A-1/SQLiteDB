@@ -1,12 +1,14 @@
 from setuptools import setup
 
 setup(
-    name = "CHECKITs",
+    name = "checkits",
     version = '1.0',
     py_modules = ['checkits'],
-    author = 'HY Univ. OSS team A-1',
+    author = 'hy univ. oss team a-1',
     author_email = 'suspicions@naver.com',
-    url = 'https://github.com/OSS-A-1/SQLiteDB',
-    dsecription = 'first version',
-    install_requires=['colorama'],
+    url = 'https://github.com/oss-a-1/sqlitedb',
+    download_url = 'https://github.com/oss-a-1/sqlitedb',
+    license = 'mit license',
+    keyword = ['checkit', 'checkits'],
+    install_requires=['colorama, function, sqlite3']
 )
