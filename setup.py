@@ -11,7 +11,7 @@ setup(
     license = 'mit license',
     keyword = ['checkit', 'checkits'],
     install_requires=['colorama', 'function'],
-    packages = find_packages()
+    packages = find_packages(),
     entry_points = {
         'console_scripts': [
                 'checkits=main:mainmenu_pre_login'
