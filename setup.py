@@ -10,5 +10,5 @@ setup(
     download_url = 'https://github.com/oss-a-1/sqlitedb',
     license = 'mit license',
     keyword = ['checkit', 'checkits'],
-    install_requires=['colorama', 'function', 'sqlite3']
+    install_requires=['colorama', 'function']
 )
