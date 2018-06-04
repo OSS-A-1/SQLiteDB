@@ -14,7 +14,7 @@ setup(
     packages = find_packages(),
     entry_points = {
         'console_scripts': [
-                'checkits=main:mainmenu_pre_login'
+                'checkits=main.main:mainmenu_pre_login'
         ],
     },
 )
