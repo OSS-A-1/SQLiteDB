@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_package
 
 setup(
     name = "checkits",
@@ -11,6 +11,7 @@ setup(
     license = 'mit license',
     keyword = ['checkit', 'checkits'],
     install_requires=['colorama', 'function'],
+    packages = find_packages()
     entry_points = {
         'console_scripts': [
                 'checkits=main:mainmenu_pre_login'
