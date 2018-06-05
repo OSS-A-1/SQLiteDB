@@ -393,7 +393,7 @@ def create_category_db(user_id, first):
     cur.execute(sql)
 
     if first == 1:
-        default_category = ["개인", "일", "쇼핑"]
+        default_category = ["Work", "Sopping", "Individual"]
 
         for val_category in default_category:
             cur.execute("insert into cate (category) "
@@ -457,13 +457,13 @@ def list_category():
 
     rows = cur.fetchall()
 
-    print("\nID  CATEGORY  \n"
-          "---------------")
+    print("\nID  CATEGORY    \n"
+          "-----------------")
     for row in rows:
         data.append(row)
 
     for row in data:
-        print("{0:<4}{1:<10}"
+        print("{0:<4}{1:<12}"
               .format(row[0], row[1]))
 
     print()
@@ -476,8 +476,8 @@ def add_category():
 
     val_cate = input("\n추가할 카테고리 입력 : ")
 
-    while not(0 < len(val_cate) < 21):
-        print(Fore.RED + "\n1 ~ 20자 이내로 입력해야 합니다." + Style.RESET_ALL)
+    while not (0 < len(val_cate) < 13):
+        print(Fore.RED + "\n1 ~ 12자 이내로 입력해야 합니다." + Style.RESET_ALL)
         val_cate = input("추가할 카테고리 입력 : ")
 
     cur.execute("insert into cate (category) values (?)",
@@ -531,8 +531,9 @@ def list_todo(data):
     print("ID  IMPORTANCE FINISHED DATE                 CATEGORY    TODO      \n"
           "-------------------------------------------------------------------")
     for val in data:
-        print("{0:<4}{1:<10}{2:<8}{3:<21}{4:<12}{5:<10}"
-              .format(val[0], val[1], val[2], val[3], val[4], val[5]))
+        print("{0:<4}{1}{2:<10}{3}{4:<8}{5:<21}{6}{7:<12}{8}{9:<10}"
+              .format(val[0], Fore.YELLOW, val[1], Style.RESET_ALL,
+                      val[2], val[3], Fore.MAGENTA, val[4], Style.RESET_ALL, val[5]))
     print()
 
 
@@ -550,24 +551,24 @@ def filter_todo(filter):
     rows = cur.fetchall()
     rows2 = cur2.fetchall()
 
-    data = []
+    re_data = []
     val_data = []
     category = '_'
 
     if filter == '0':
         for row in rows:
-            if row[1] == '0':
+            if row[1] == 0:
                 importance = "★"
             else:
                 importance = "☆"
-            if row[2] == '1':
+            if row[2] == 1:
                 finished = "○"
             else:
                 finished = "×"
             for row2 in rows2:
                 if row[4] == row2[0]:
                     category = row2[1]
-            data.append([row[0], importance, finished, row[3], category, row[5]])
+            re_data.append([row[0], importance, finished, row[3], category, row[5]])
     elif filter == '1':
         print()
         for no in range(0, len(rows2)):
@@ -587,74 +588,74 @@ def filter_todo(filter):
                 val_data.append(row)
 
         for row in val_data:
-            if row[1] == '0':
+            if row[1] == 0:
                 importance = "★"
             else:
                 importance = "☆"
-            if row[2] == '1':
+            if row[2] == 1:
                 finished = "○"
             else:
                 finished = "×"
             for row2 in rows2:
                 if row[4] == row2[0]:
                     category = row2[1]
-            data.append([row[0], importance, finished, row[3], category, row[5]])
+            re_data.append([row[0], importance, finished, row[3], category, row[5]])
     elif filter == '2':
         for row in rows:
-            if row[2] == '0':
+            if row[2] == 0:
                 val_data.append(row)
 
         for row in val_data:
-            if row[1] == '0':
+            if row[1] == 0:
                 importance = "★"
             else:
                 importance = "☆"
-            if row[2] == '1':
+            if row[2] == 1:
                 finished = "○"
             else:
                 finished = "×"
             for row2 in rows2:
                 if row[4] == row2[0]:
                     category = row2[1]
-            data.append([row[0], importance, finished, row[3], category, row[5]])
+            re_data.append([row[0], importance, finished, row[3], category, row[5]])
     elif filter == '3':
         for row in rows:
-            if row[2] == '1':
+            if row[2] == 1:
                 val_data.append(row)
 
         for row in val_data:
-            if row[1] == '0':
+            if row[1] == 0:
                 importance = "★"
             else:
                 importance = "☆"
-            if row[2] == '1':
+            if row[2] == 1:
                 finished = "○"
             else:
                 finished = "×"
             for row2 in rows2:
                 if row[4] == row2[0]:
                     category = row2[1]
-            data.append([row[0], importance, finished, row[3], category, row[5]])
+            re_data.append([row[0], importance, finished, row[3], category, row[5]])
     elif filter == '4':
         for row in rows:
-            if row[1] == '0':
+            if row[1] == 0:
                 val_data.append(row)
 
         for row in val_data:
-            if row[1] == '0':
+            if row[1] == 0:
                 importance = "★"
             else:
                 importance = "☆"
-            if row[2] == '1':
+            if row[2] == 1:
                 finished = "○"
             else:
                 finished = "×"
             for row2 in rows2:
                 if row[4] == row2[0]:
                     category = row2[1]
-            data.append([row[0], importance, finished, row[3], category, row[5]])
+            re_data.append([row[0], importance, finished, row[3], category, row[5]])
 
-    list_todo(data)
+    list_todo(re_data)
 
 def modify_todo():
     conn = sqlite3.connect("{0}.db".format(current_id))
@@ -717,7 +718,30 @@ def modify_todo():
     conn.commit()
 
 def delete_todo():
-    print("할일 제거-미구현")
+    conn = sqlite3.connect("{0}.db".format(current_id))
+    cur = conn.cursor()
+    sql = "select * from todo where 1"
+    cur.execute(sql)
+    rows = cur.fetchall()
+
+    if len(rows) == 0:
+        print(Fore.RED + "제거할 할일이 없습니다." + Style.RESET_ALL)
+
+    filter_todo('0')
+
+    cho = input("제거할 ID 선택 : ")
+
+    while (not cho.isdigit()) or (cho.isdigit() and not (0 < int(cho) <= len(rows) + 1)):
+        print(Fore.RED + "\n0 ~ {0} 사이의 숫자만을 입력해야 합니다.".format(len(rows)) + Style.RESET_ALL)
+        cho = input("제거할 ID 선택 : ")
+
+    cho = int(cho)
+
+    cur.execute("DELETE FROM todo WHERE id = ?",
+                (cho,))
+    conn.commit()
+
+    print("{0}번 할일이 삭제되었습니다.\n".format(cho))
 
 if __name__ == "__main__":
     mainmenu_pre_login()

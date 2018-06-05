@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = "checkits",
-    version = '1.01',
+    version = '1.2',
     py_modules = ['checkits'],
     author = 'hy univ. oss team a-1',
     author_email = 'suspicions@naver.com',
