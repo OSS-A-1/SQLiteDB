@@ -7,4 +7,3 @@ install:
  - pip install checkits
 script:
  - checkits
- - 2
