@@ -1,5 +1,5 @@
 import sqlite3
-import function
+import datetime
 from colorama import init, Fore, Style
 
 init(convert=True)
@@ -8,6 +8,145 @@ is_login = 0
 current_id = 0
 data = []
 todo_data = []
+
+def cmd_mode():
+    create_login_db()
+
+    print(Fore.CYAN + """
+          ***   *                    *         *   *  *
+         *   *  *                    *         *   *  *
+        *       ****    ***    ***   *  *      *  *** *
+        *       *   *  *   *  *   *  * *       *   *  *
+        *       *   *  *****  *      **        *   *  *
+        *       *   *  *      *      **        *   *  *
+         *   *  *   *  *   *  *   *  * *       *   *   
+          ***   *   *   ***    ***   *  *      *   ** *
+        """ + Style.RESET_ALL + "https://github.com/OSS-A-1/SQLiteDB" +
+          Fore.GREEN + " 1.3v\n" + Style.RESET_ALL)
+
+    while True:
+        cmd = input(">> ")
+
+        if cmd == 'login':
+            if is_login == 1:
+                print(Fore.RED + "로그인 후에는 사용할 수 없습니다." + Style.RESET_ALL)
+            else:
+                login()
+        elif cmd == 'register':
+            if is_login == 1:
+                print(Fore.RED + "로그인 후에는 사용할 수 없습니다." + Style.RESET_ALL)
+            register()
+        elif cmd == 'mod':
+            if is_login == 1:
+                print(Fore.RED + "로그인 후에는 사용할 수 없습니다." + Style.RESET_ALL)
+            mainmenu_pre_login()
+            return
+        elif cmd == 'quit':
+            return
+        elif cmd[:4] == 'list':
+            if is_login == 0:
+                print(Fore.RED + "로그인을 먼저 해주세요." + Style.RESET_ALL)
+            else:
+                if cmd[5:] == 'all':
+                    filter_todo('0')
+                elif cmd[5:] == 'category':
+                    filter_todo('1')
+                elif cmd[5:] == 'not_finished':
+                    filter_todo('2')
+                elif cmd[5:] == 'finished':
+                    filter_todo('3')
+                elif cmd[5:] == 'important':
+                    filter_todo('4')
+                else:
+                    print(Fore.RED + "'{0}'는 잘못된 명령어 입니다.\n명령어 보기 : help 0 ~ 1".format(cmd[5:]) + Style.RESET_ALL)
+        elif cmd[:3] == 'add':
+            if is_login == 0:
+                print(Fore.RED + "로그인을 먼저 해주세요." + Style.RESET_ALL)
+            else:
+                add_todo()
+        elif cmd[:6] == 'modify':
+            if is_login == 0:
+                print(Fore.RED + "로그인을 먼저 해주세요." + Style.RESET_ALL)
+            else:
+                modify_todo()
+        elif cmd[:6] == 'delete':
+            if is_login == 0:
+                print(Fore.RED + "로그인을 먼저 해주세요." + Style.RESET_ALL)
+            else:
+                delete_todo()
+        elif cmd[:8] == 'category':
+            if is_login == 0:
+                print(Fore.RED + "로그인을 먼저 해주세요." + Style.RESET_ALL)
+            else:
+                if cmd[9:] == 'list':
+                    list_category()
+                elif cmd[9:] == 'add':
+                    add_category()
+                elif cmd[9:] == 'modify':
+                    print("카테고리 수정")
+                elif cmd[9:] == 'delete':
+                    print("카테고리 삭제")
+                else:
+                    print(Fore.RED + "'{0}'는 잘못된 명령어 입니다.\n명령어 보기 : help 0 ~ 1".format(cmd[5:]) + Style.RESET_ALL)
+        elif cmd[:4] == 'user':
+            if is_login == 0:
+                print(Fore.RED + "로그인을 먼저 해주세요." + Style.RESET_ALL)
+            else:
+                print("사용자 정보")
+                print("현재 사용자 : {0}".format(data[1]))
+        elif cmd[:6] == 'logout':
+            if is_login == 0:
+                print(Fore.RED + "로그인을 먼저 해주세요." + Style.RESET_ALL)
+            else:
+                logout()
+        elif cmd[:6] == 'change':
+            if is_login == 0:
+                print(Fore.RED + "로그인을 먼저 해주세요." + Style.RESET_ALL)
+            else:
+                if cmd[7:] == 'pw':
+                    change_pw()
+                else:
+                    print(Fore.RED + "'{0}'는 잘못된 명령어 입니다.\n명령어 보기 : help 0 ~ 1".format(cmd[5:]) + Style.RESET_ALL)
+        elif cmd[:4] == 'help':
+            if cmd[5:] == '0':
+                help(0)
+            elif cmd[5:] == '1':
+                help(1)
+            else:
+                print(Fore.RED + "'{0}'는 잘못된 명령어 입니다.\n명령어 보기 : help 0 ~ 1".format(cmd) + Style.RESET_ALL)
+        elif cmd == 'program_info':
+            program_info()
+        elif cmd == 'manual':
+            manual()
+        else:
+            print(Fore.RED + "'{0}'는 잘못된 명령어 입니다.\n명령어 보기 : help 0 ~ 1".format(cmd) + Style.RESET_ALL)
+
+def help(cho):
+    if cho == 0:
+        print("로그인 전에 사용가능")
+        print('login : 로그인')
+        print('register : 가입')
+        print('mod : 모드 변경')
+    elif cho == 1:
+        print("로그인 후에 사용가능")
+        print("add : 할일 추가")
+        print("modify : 할일 수정")
+        print("delete : 할일 삭제")
+        print('list all : 할일 전체 보기')
+        print('list category : 카테고리별로 할일 보기')
+        print('list not_finished : 완료하지 않은 할일 보기')
+        print('list finished : 완료된 할일 보기')
+        print('list important : 중요한 할일 보기')
+        print('category list : 카테고리 보기')
+        print('category add : 카테고리 추가')
+        print('category modify : 카테고리 수정')
+        print('category delete : 카테고리 삭제')
+        print('user : 유저 정보 보기')
+        print('logout : 로그아웃')
+        print('change pw : 비밀번호 변경')
+        print('manual : 매뉴얼 보기')
+        print('program_info : 프로그램 정보 보기')
+
 
 def mainmenu_pre_login():
     create_login_db()
@@ -22,15 +161,17 @@ def mainmenu_pre_login():
         *       *   *  *      *      **        *   *  *
          *   *  *   *  *   *  *   *  * *       *   *   
           ***   *   *   ***    ***   *  *      *   ** *
-        """ + Style.RESET_ALL + "https://github.com/OSS-A-1/SQLiteDB\n")
+        """ + Style.RESET_ALL + "https://github.com/OSS-A-1/SQLiteDB" +
+              Fore.GREEN + " 1.3v\n" + Style.RESET_ALL)
 
         print("[0] 로그인")
         print("[1] 가입")
-        print("[2] 종료")
+        print("[2] 커멘드 라인 모드로 전환")
+        print("[3] 종료")
         cho = input(">> ")
 
-        while (not cho.isdigit()) or (cho.isdigit() and not (0 <= int(cho) <= 2)):
-            print(Fore.RED + "\n0 ~ 2 사이의 숫자만을 입력해야 합니다." + Style.RESET_ALL)
+        while (not cho.isdigit()) or (cho.isdigit() and not (0 <= int(cho) <= 3)):
+            print(Fore.RED + "\n0 ~ 3 사이의 숫자만을 입력해야 합니다." + Style.RESET_ALL)
             cho = input(">> ")
 
         cho = int(cho)
@@ -41,6 +182,9 @@ def mainmenu_pre_login():
         elif cho == 1:
             register()
         elif cho == 2:
+            cmd_mode()
+            return
+        elif cho == 3:
             return
         if is_login == 1:
             mainmenu_aft_login()
@@ -59,7 +203,7 @@ def mainmenu_aft_login():
         cho = input(">> ")
 
         while (not cho.isdigit()) or (cho.isdigit() and not (0 <= int(cho) <= 6)):
-            print(Fore.RED + "\n0 ~ 7 사이의 숫자만을 입력해야 합니다." + Style.RESET_ALL)
+            print(Fore.RED + "\n0 ~ 6 사이의 숫자만을 입력해야 합니다." + Style.RESET_ALL)
             cho = input(">> ")
 
         cho = int(cho)
@@ -123,7 +267,7 @@ def mainmenu_aft_login():
             user_info()
             return
         elif cho == 5:
-            program_info()
+            program()
         elif cho == 6:
             return
 
@@ -131,7 +275,8 @@ def logout():
     global current_id, is_login
     is_login = 0
     current_id = 0
-    print(1)
+
+    print("로그아웃 완료.")
     mainmenu_pre_login()
 
 def user_info():
@@ -213,9 +358,93 @@ def change_pw():
 
     conn.close()
 
+def program():
+    while True:
+        print("[0] 매뉴얼 보기")
+        print("[1] 프로그램 정보 보기")
+        print("[2] 취소")
+
+        cho = input(">> ")
+
+        while (not cho.isdigit()) or (cho.isdigit() and not (0 <= int(cho) <= 2)):
+            print(Fore.RED + "\n0 ~ 2 사이의 숫자만을 입력해야 합니다." + Style.RESET_ALL)
+            cho = input(">> ")
+
+        cho = int(cho)
+
+        if cho == 0:
+            manual()
+        elif cho == 1:
+            program_info()
+        elif cho == 2:
+            return
+
 def program_info():
     print("프로그램 이름 : Check It!")
-    print("깃 허브 주소 : https://github.com/OSS-A-1/SQLiteDB")
+    print("깃 허브 : https://github.com/OSS-A-1/SQLiteDB")
+    print("pypi : https://pypi.org/project/checkits/")
+    print("버전 : 1.3v")
+    print("라이선스 : MIT 라이선스")
+
+def manual():
+    print("""
+    Manpage
+
+이름
+checkits
+
+소개
+이 프로그램은 사용자가 자신이 할 일을 기록하고 보고 수정할 수 있도록 하고,
+이를 db 파일로 저장해 둘 수 있도록 만든 프로그램이다.
+
+<명령어를 입력하는 방식>
+로그인 전에 사용가능
+login : 로그인
+register : 가입
+mod : 모드 변경
+
+로그인 후에 사용가능
+add : 할일 추가
+modify : 할일 수정
+delete : 할일 삭제
+list all : 할일 전체 보기
+list category : 카테고리별로 할일 보기
+list not_finished : 완료하지 않은 할일 보기
+list finished : 완료된 할일 보기
+list important : 중요한 할일 보기
+category list : 카테고리 보기
+category add : 카테고리 추가
+category modify : 카테고리 수정
+category delete : 카테고리 삭제
+user : 유저 정보 보기
+logout : 로그아웃
+change pw : 비밀번호 변경
+
+<명령어를 입력하지 않는 방식>
+이 경우 사용자는 명령어를 외울 필요가 없이 메뉴를 호출할 숫자와 내용만 입력하면 된다.
+
+옵션
+프로그램은 로그인 전/후 두 부분으로 나눌 수 있다.
+
+<로그인 전 부분>
+프로그램을 실행한 사용자는 로그인 화면을 접하게 될 것이다.
+로그인을 선택할 경우 ID와 PW를 맞게 입력하면 로그인 후로 넘어가고 ID에 해당하는 db파일을 불러온다.
+가입을 선택할 경우 새로운 ID와 PW를 설정할 수 있다.
+종료를 선택할 경우 프로그램이 종료된다.
+
+<로그인 후 부분>
+사용자는 로그인이 된 후 db파일을 사용할 수 있게 된다.
+항목 보기에서는 모든 내용을 보거나 조건을 만족하는 내용만 볼 수 있다.
+이 프로그램에서는 항목별로 ID, 중요도, 완료여부, 날짜(기한), 카테고리, 내용을 저장한다.
+항목 관리에서는 항목의 내용을 수정하거나 삭제할 수 있다.
+항목 추가에서는 사용자가 입력한 값을 db파일에 새로 추가한다.
+완료여부는 항목 추가에서 미완료로 자동 입력된다.
+카테고리 관리에서는 기본적으로 제공하는 카테고리 외에도 새로운 카테고리를 추가하거나 수정, 삭제할 수 있다.
+
+사용자의 db파일을 사용하지 않는 기능은 사용자 및 프로그램 정보 보기 기능이다.
+사용자 정보에서는 다른 사용자로 전환하기 위한 로그아웃 기능과 비밀번호 변경 기능을 제공한다.
+프로그램 정보에서는 이 프로그램에 대한 간략한 정보를 보여준다. 
+    """)
 
 def list_user():
     conn = sqlite3.connect("user_data.db")
@@ -393,7 +622,7 @@ def create_category_db(user_id, first):
     cur.execute(sql)
 
     if first == 1:
-        default_category = ["Work", "Sopping", "Individual"]
+        default_category = ["Work", "Shopping", "Individual"]
 
         for val_category in default_category:
             cur.execute("insert into cate (category) "
@@ -439,12 +668,139 @@ def man_category():
         elif cho == 1:
             add_category()
         elif cho == 2:
-            print("카테고리 수정-미구현")
+            modify_category()
         elif cho == 3:
             print("카테고리 제거-미구현")
         elif cho == 4:
             mainmenu_aft_login()
             return
+
+def modify_category():
+    list_category()
+    conn = sqlite3.connect("{0}.db".format(current_id))
+    cur = conn.cursor()
+
+    data = []
+    data2 = []
+
+    sql = "select * from todo where 1"
+    cur.execute(sql)
+
+    rows = cur.fetchall()
+
+    conn2 = sqlite3.connect("{0}_category.db".format(current_id))
+    cur2 = conn2.cursor()
+
+    sql = "select * from cate where 1"
+    cur2.execute(sql)
+
+    rows2 = cur2.fetchall()
+
+    for row in rows:
+        data.append(row)
+
+    for row in rows2:
+        data2.append(row)
+
+    cho = input("수정할 ID 선택 : ")
+
+    while (not cho.isdigit()) or (cho.isdigit() and not (data2[0][0] <= int(cho) <= data2[-1][0])):
+        print(Fore.RED + "\n{0} ~ {1} 사이의 숫자만을 입력해야 합니다.".format(data2[0][0], data2[-1][0]) + Style.RESET_ALL)
+        cho = input("수정할 ID 선택 : ")
+
+    cho = int(cho)
+
+    same = 0
+
+    for x in data:
+        if x[4] == cho:
+            same = 1
+            break
+
+    if same == 1:
+        print(Fore.RED + "'{0} {1}' 카테고리를 사용하고있는 할일이 있어 수정할 수 없습니다.\n"
+              .format(cho, data2[cho - 1][1]) + Style.RESET_ALL)
+        return
+    else:
+        val_cate = input("카테고리 입력 : ")
+
+        while not (0 < len(val_cate) < 13):
+            print(Fore.RED + "\n1 ~ 12자 이내로 입력해야 합니다." + Style.RESET_ALL)
+            val_cate = input("추가할 카테고리 입력 : ")
+
+        cur2.execute("UPDATE cate SET category = ? WHERE id = ?",
+                    (val_cate, cho))
+        conn2.commit()
+
+        print("카테고리 수정 성공\n")
+
+        conn2.close()
+
+def delete_category():
+    list_category()
+    conn = sqlite3.connect("{0}.db".format(current_id))
+    cur = conn.cursor()
+
+    data = []
+    data2 = []
+
+    sql = "select * from todo where 1"
+    cur.execute(sql)
+
+    rows = cur.fetchall()
+
+    conn2 = sqlite3.connect("{0}_category.db".format(current_id))
+    cur2 = conn2.cursor()
+
+    sql = "select * from cate where 1"
+    cur2.execute(sql)
+
+    rows2 = cur2.fetchall()
+
+    for row in rows:
+        data.append(row)
+
+    for row in rows2:
+        data2.append(row)
+
+    if len(data2) == 0:
+        print(Fore.RED + "삭제할 카테고리가 없습니다." + Style.RESET_ALL)
+        return
+
+    cho = input("삭제할 ID 선택 : ")
+
+    while (not cho.isdigit()) or (cho.isdigit() and not (data2[0][0] <= int(cho) <= data2[-1][0])):
+        print(Fore.RED + "\n{0} ~ {1} 사이의 숫자만을 입력해야 합니다.".format(data2[0][0], data2[-1][0]) + Style.RESET_ALL)
+        cho = input("삭제할 ID 선택 : ")
+
+    cho = int(cho)
+
+    same = 0
+
+    for x in data:
+        if x[4] == cho:
+            same = 1
+            break
+
+    if same == 1:
+        print(Fore.RED + "'{0} {1}' 카테고리를 사용하고있는 할일이 있어 삭제할 수 없습니다.\n"
+              .format(cho, data2[cho - 1][1]) + Style.RESET_ALL)
+        return
+    else:
+        val_cate = input("카테고리 입력 : ")
+
+        while not (0 < len(val_cate) < 13):
+            print(Fore.RED + "\n1 ~ 12자 이내로 입력해야 합니다." + Style.RESET_ALL)
+            val_cate = input("삭제할 카테고리 입력 : ")
+
+        cur2.execute("DELETE FROM cate WHERE id = ?",
+                     (cho, ))
+        conn2.commit()
+
+        print("카테고리 삭제 성공\n")
+
+        conn2.close()
+
 
 def list_category():
     conn = sqlite3.connect("{0}_category.db".format(current_id))
@@ -495,7 +851,14 @@ def add_todo():
     cur2 = conn2.cursor()
 
     val_what = input("할일 입력 : ")
-    val_due = input("기한 입력 : ")
+    TF = False
+    while TF != True:
+        val_due = input("기한 입력 (YYYY-MM-DD) : ")
+        try:
+            datetime.datetime.strptime(val_due, '%Y-%m-%d')
+            TF = True
+        except ValueError:
+            print("YYYY-MM-DD 형식으로 날짜를 입력해야 합니다.")
     sql = "select * from cate where 1"
     cur2.execute(sql)
 
@@ -679,7 +1042,14 @@ def modify_todo():
     cho = int(cho)
 
     val_what = input("할일 입력 : ")
-    val_due = input("기한 입력 : ")
+    TF = False
+    while TF != True:
+        val_due = input("기한 입력 (YYYY-MM-DD) : ")
+        try:
+            datetime.datetime.strptime(val_due, '%Y-%m-%d')
+            TF = True
+        except ValueError:
+            print("YYYY-MM-DD 형식으로 날짜를 입력해야 합니다.")
     sql = "select * from cate where 1"
     cur2.execute(sql)
 
