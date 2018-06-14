@@ -1,3 +1,13 @@
-this program is Showing list file Program.
-List is Your Schedule.
-You can Add, modify, delete and just look your Schedule in .db files.
+이 프로그램은 사용자가 자신이 할 일을 기록하고 보고 수정할 수 있도록 하고,
+이를 db 파일로 저장해 둘 수 있도록 만든 프로그램이다.
+
+설치법
+명령 프롬프트에서 pip install checkits 를 입력해주면 자동 설치된다.
+이후 명령 프롬프트에서 checkits 를 입력하면 프로그램이 실행된다.
+
+코드설명
+코드는 두 부분으로 크게 나누어
+사용자의 로그인 및 계정에 해당된 db파일을 불러오는 부분과
+실제로 사용자가 db파일을 수정할 수 있는 부분으로 나뉘어있다.
+자세한 사용법은 통상 모드일 때는 로그인 후 메인메뉴에서 프로그램 정보 보기 -> 매뉴얼 보기 를,
+커맨드 모드일 때는 manual을 입력하여 manpage를 참조하면 된다.
